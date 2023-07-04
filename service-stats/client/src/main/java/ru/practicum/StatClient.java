@@ -1,5 +1,6 @@
 package ru.practicum;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -11,35 +12,36 @@ import java.util.Map;
 @Service
 public class StatClient {
     private final RestTemplate rest;
-    private static final String STAT_SERVER_URL = "http://localhost:9090";
+    private final String statServerUrl;
 
-    public StatClient() {
+    public StatClient(@Value("${stat.server.url}") String statServerUrl) {
         this.rest = new RestTemplate();
+        this.statServerUrl = statServerUrl;
     }
 
     public void addHit(HitDto hitDto) {
         HttpEntity<HitDto> requestEntity = new HttpEntity<>(hitDto);
-        rest.exchange(STAT_SERVER_URL + "/hit", HttpMethod.POST, requestEntity, Object.class);
+        rest.exchange(statServerUrl + "/hit", HttpMethod.POST, requestEntity, Object.class);
     }
 
-    public ResponseEntity<Object> getStats(String start, String end, String uri, boolean unique) {
+    public ResponseEntity<Object> getStats(ViewsStatsRequest request) {
         Map<String, Object> parameters;
         String path;
-        if (uri != null) {
+        if (request.hasUriCondition()) {
             parameters = Map.of(
-                    "start", start,
-                    "end", end,
-                    "uri", uri,
-                    "unique", unique
+                    "start", request.getStart(),
+                    "end", request.getEnd(),
+                    "uri", request.getUris(),
+                    "unique", request.isUnique()
             );
-            path = STAT_SERVER_URL + "/stats/?start={start}&end={end}&uris={uris}&unique={unique}";
+            path = statServerUrl + "/stats/?start={start}&end={end}&uris={uris}&unique={unique}";
         } else {
             parameters = Map.of(
-                    "start", start,
-                    "end", end,
-                    "unique", unique
+                    "start", request.getStart(),
+                    "end", request.getEnd(),
+                    "unique", request.isUnique()
             );
-            path = STAT_SERVER_URL + "/stats/?start={start}&end={end}unique={unique}";
+            path = statServerUrl + "/stats/?start={start}&end={end}unique={unique}";
         }
         ResponseEntity<Object> responseEntity = rest.getForEntity(path, Object.class, parameters);
         if (responseEntity.getStatusCode().is2xxSuccessful()) {

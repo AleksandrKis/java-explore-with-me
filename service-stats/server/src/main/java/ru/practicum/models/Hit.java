@@ -1,5 +1,6 @@
 package ru.practicum.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Hit {
     String uri;
     @Column(name = "ip", nullable = false)
     String ip;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "time", nullable = false)
     LocalDateTime timestamp;
 

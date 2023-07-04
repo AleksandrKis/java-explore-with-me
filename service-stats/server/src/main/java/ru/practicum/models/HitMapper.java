@@ -3,7 +3,8 @@ package ru.practicum.models;
 import ru.practicum.HitDto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static ru.practicum.utils.Constant.DATE_TIME_FORMATTER;
 
 public class HitMapper {
     public static Hit mapToHit(HitDto hitDto) {
@@ -11,7 +12,8 @@ public class HitMapper {
         hit.setApp(hitDto.getApp());
         hit.setUri(hitDto.getUri());
         hit.setIp(hitDto.getIp());
-        hit.setTimestamp(LocalDateTime.parse(hitDto.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//        hit.setTimestamp(hitDto.getTimestamp());
+        hit.setTimestamp(LocalDateTime.parse(hitDto.getTimestamp(), DATE_TIME_FORMATTER));
         return hit;
     }
 }
