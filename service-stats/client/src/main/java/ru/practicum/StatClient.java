@@ -14,24 +14,24 @@ public class StatClient {
     private final RestTemplate rest;
     private final String statServerUrl;
 
-    public StatClient(@Value("${stat.server.url}") String statServerUrl) {
+    public StatClient(@Value("${stats.server.url}") String statServerUrl) {
         this.rest = new RestTemplate();
         this.statServerUrl = statServerUrl;
     }
 
     public void addHit(HitDto hitDto) {
         HttpEntity<HitDto> requestEntity = new HttpEntity<>(hitDto);
-        rest.exchange(statServerUrl + "/hit", HttpMethod.POST, requestEntity, Object.class);
+        rest.exchange(statServerUrl + "/hit", HttpMethod.POST, requestEntity, HitDto.class);
     }
 
-    public ResponseEntity<Object> getStats(ViewsStatsRequest request) {
+    public ResponseEntity<StatResponseDto[]> getStats(ViewsStatsRequest request) {
         Map<String, Object> parameters;
         String path;
         if (request.hasUriCondition()) {
             parameters = Map.of(
                     "start", request.getStart(),
                     "end", request.getEnd(),
-                    "uri", request.getUris(),
+                    "uris", request.getUris().toArray(),
                     "unique", request.isUnique()
             );
             path = statServerUrl + "/stats/?start={start}&end={end}&uris={uris}&unique={unique}";
@@ -43,7 +43,7 @@ public class StatClient {
             );
             path = statServerUrl + "/stats/?start={start}&end={end}unique={unique}";
         }
-        ResponseEntity<Object> responseEntity = rest.getForEntity(path, Object.class, parameters);
+        ResponseEntity<StatResponseDto[]> responseEntity = rest.getForEntity(path, StatResponseDto[].class, parameters);
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             return responseEntity;
         }
@@ -52,5 +52,23 @@ public class StatClient {
             return bodyBuilder.body(responseEntity.getBody());
         }
         return bodyBuilder.build();
+    }
+
+    public Long getCount(String start, String end, String uri) {
+        Map<String, Object> parameters;
+        String path;
+        parameters = Map.of(
+                "start", start,
+                "end", end,
+                "uri", uri
+        );
+        path = statServerUrl + "/count/?start={start}&end={end}&uri={uri}";
+        ResponseEntity<Long> countHit = rest.getForEntity(path, Long.class, parameters);
+        if (countHit.getStatusCode().is2xxSuccessful()) {
+            return countHit.getBody();
+        }
+        ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.status(countHit.getStatusCode());
+        countHit.hasBody();
+        return bodyBuilder.body(-1L).getBody();
     }
 }

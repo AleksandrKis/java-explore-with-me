@@ -29,6 +29,15 @@ public class StatsServerController {
                                           @RequestParam(required = false) List<String> uris,
                                           @RequestParam(required = false, defaultValue = "false") boolean unique) {
         log.info("StatServer give out list stats.");
+
         return service.getStats(start, end, uris, unique);
+    }
+
+    @GetMapping("/count")
+    public Long getCount(@RequestParam String start,
+                         @RequestParam String end,
+                         @RequestParam(required = false) String uri) {
+        log.info("StatServer give out countHit stats.");
+        return service.getCount(start, end, uri);
     }
 }

@@ -1,6 +1,7 @@
 package ru.practicum.models;
 
 import ru.practicum.HitDto;
+import ru.practicum.StatResponseDto;
 
 import java.time.LocalDateTime;
 
@@ -12,8 +13,14 @@ public class HitMapper {
         hit.setApp(hitDto.getApp());
         hit.setUri(hitDto.getUri());
         hit.setIp(hitDto.getIp());
-//        hit.setTimestamp(hitDto.getTimestamp());
         hit.setTimestamp(LocalDateTime.parse(hitDto.getTimestamp(), DATE_TIME_FORMATTER));
         return hit;
+    }
+
+    public static StatResponseDto mapToResponseDto(StatsOut stats) {
+        return StatResponseDto.builder()
+                .app(stats.getApp())
+                .uri(stats.getUri())
+                .hits(stats.getHits()).build();
     }
 }
