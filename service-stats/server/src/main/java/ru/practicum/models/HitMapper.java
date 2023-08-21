@@ -5,7 +5,7 @@ import ru.practicum.StatResponseDto;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.utils.Constant.DATE_TIME_FORMATTER;
+import static ru.practicum.utils.Const.DATE_TIME_FORMATTER;
 
 public class HitMapper {
     public static Hit mapToHit(HitDto hitDto) {

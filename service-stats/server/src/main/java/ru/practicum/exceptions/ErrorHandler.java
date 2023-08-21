@@ -12,7 +12,7 @@ public class ErrorHandler {
     @ExceptionHandler({UnknownStateException.class, WrongTimePeriodException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnknownState(RuntimeException exception) {
-        log.error("ОШИБКА");
+        log.error(exception.getLocalizedMessage());
         return new ErrorResponse(exception.getMessage());
     }
 }

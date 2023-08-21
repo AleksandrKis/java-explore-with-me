@@ -6,14 +6,14 @@ import lombok.Singular;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
+
+import static ru.practicum.utils.Const.DATE_TIME_FORMATTER;
 
 @Getter
 @ToString
 @Builder(toBuilder = true)
 public class ViewsStatsRequest {
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @Singular("uri")
     private Set<String> uris;
 
