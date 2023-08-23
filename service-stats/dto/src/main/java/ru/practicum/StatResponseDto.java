@@ -13,9 +13,21 @@ public class StatResponseDto {
     String uri;
     Long hits;
 
+    public StatResponseDto() {
+    }
+
     public StatResponseDto(String app, String uri, Long hits) {
         this.app = app;
         this.uri = uri;
         this.hits = hits;
+    }
+
+    @Override
+    public String toString() {
+        return "StatResponseDto{" +
+                "app='" + app + '\'' +
+                ", uri='" + uri + '\'' +
+                ", hits=" + hits +
+                '}';
     }
 }

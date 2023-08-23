@@ -23,15 +23,9 @@ public class ViewsStatsRequest {
 
     private boolean unique;
 
-    private Integer limit;
-
     private String application;
 
     public boolean hasUriCondition() {
         return uris != null && !uris.isEmpty();
-    }
-
-    public boolean hasLimitCondition() {
-        return limit != null && limit != 0;
     }
 }

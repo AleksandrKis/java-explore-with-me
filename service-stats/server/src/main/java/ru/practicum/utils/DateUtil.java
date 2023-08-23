@@ -1,8 +1,10 @@
 package ru.practicum.utils;
 
+import ru.practicum.exceptions.WrongTimePeriodException;
+
 import java.time.LocalDateTime;
 
-import static ru.practicum.utils.Constant.DATE_TIME_FORMATTER;
+import static ru.practicum.utils.Const.DATE_TIME_FORMATTER;
 
 public class DateUtil {
 
@@ -15,7 +17,7 @@ public class DateUtil {
 
     public static void validTime(String start, String end) {
         if (convertString(start).isAfter(convertString(end))) {
-            throw new RuntimeException("Wrong Time period");
+            throw new WrongTimePeriodException("Wrong Time period");
         }
     }
 }

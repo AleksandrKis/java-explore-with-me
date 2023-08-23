@@ -4,9 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.HitDto;
 import ru.practicum.StatResponseDto;
+import ru.practicum.models.HitMapper;
+import ru.practicum.models.StatsOut;
 import ru.practicum.storage.HitRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.practicum.models.HitMapper.mapToHit;
 import static ru.practicum.utils.DateUtil.convertString;
@@ -26,10 +30,20 @@ public class StatServiceImpl implements StatService {
     @Override
     public List<StatResponseDto> getStats(String start, String end, List<String> uris, Boolean uniques) {
         validTime(start, end);
+        List<StatsOut> resultStat;
         if (uniques) {
-            return repoHit.getUniqueByTimePeriod(convertString(start), convertString(end), uris);
+            resultStat = repoHit.getUniqueByTimePeriod(convertString(start), convertString(end), uris);
         } else {
-            return repoHit.getAllByTimePeriod(convertString(start), convertString(end), uris);
+            resultStat = repoHit.getAllByTimePeriod(convertString(start), convertString(end), uris);
         }
+        return resultStat.isEmpty() ? Collections.emptyList() : resultStat
+                .stream()
+                .map(HitMapper::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getCount(String start, String end, String uri) {
+        return repoHit.countUniqueIp(convertString(start), convertString(end), uri);
     }
 }
