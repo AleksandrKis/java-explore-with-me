@@ -8,8 +8,6 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static ru.practicum.utils.Const.DATE_TIME_FORMATTER;
-
 @Getter
 @ToString
 @Builder(toBuilder = true)
@@ -18,10 +16,10 @@ public class ViewsStatsRequest {
     private Set<String> uris;
 
     @Builder.Default
-    private String start = LocalDateTime.now().withHour(0).withMinute(0).format(DATE_TIME_FORMATTER);
+    private LocalDateTime start = LocalDateTime.now().withHour(0).withMinute(0);
 
     @Builder.Default
-    private String end = LocalDateTime.now().format(DATE_TIME_FORMATTER);
+    private LocalDateTime end = LocalDateTime.now();
 
     private boolean unique;
 

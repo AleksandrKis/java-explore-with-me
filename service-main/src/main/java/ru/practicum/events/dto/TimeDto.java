@@ -18,6 +18,8 @@ public class TimeDto {
     String rangeEnd;
     LocalDateTime start;
     LocalDateTime end;
+    final int dayBefore = 7;
+    final int dayPast = 7;
 
     public TimeDto(String rangeStart, String rangeEnd) {
         this.rangeStart = rangeStart;
@@ -26,13 +28,13 @@ public class TimeDto {
         if (rangeStart != null) {
             this.start = convertString(rangeStart);
         } else {
-            this.start = convertTime(LocalDateTime.now().minusDays(7));
+            this.start = convertTime(LocalDateTime.now().minusDays(dayBefore));
         }
 
         if (rangeEnd != null) {
             this.end = convertString(rangeEnd);
         } else {
-            this.end = convertTime(LocalDateTime.now().plusDays(7));
+            this.end = convertTime(LocalDateTime.now().plusDays(dayPast));
         }
     }
 }

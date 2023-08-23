@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers(List<Long> ids, int from, int size) {
-        return mapToListDto(userRepo.findByIdIn(ids, getPage(from, size)));
+        return mapToListDto(userRepo.findByIds(ids, getPage(from, size)));
     }
 
     @Override

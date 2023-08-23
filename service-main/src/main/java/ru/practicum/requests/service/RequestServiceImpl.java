@@ -82,6 +82,7 @@ public class RequestServiceImpl implements RequestService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public ResultRequestsReviewDto changeStatusRequests(long userId, long eventId, RequestReviewDto reviewDto) {
         Event event = eventService.checkValidEvent(eventId);

@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
+import static ru.practicum.utils.Const.DATE_TIME_FORMATTER;
+
 @Service
 public class StatClient {
     private final RestTemplate rest;
@@ -29,16 +31,16 @@ public class StatClient {
         String path;
         if (request.hasUriCondition()) {
             parameters = Map.of(
-                    "start", request.getStart(),
-                    "end", request.getEnd(),
+                    "start", request.getStart().format(DATE_TIME_FORMATTER),
+                    "end", request.getEnd().format(DATE_TIME_FORMATTER),
                     "uris", request.getUris().toArray(),
                     "unique", request.isUnique()
             );
             path = statServerUrl + "/stats/?start={start}&end={end}&uris={uris}&unique={unique}";
         } else {
             parameters = Map.of(
-                    "start", request.getStart(),
-                    "end", request.getEnd(),
+                    "start", request.getStart().format(DATE_TIME_FORMATTER),
+                    "end", request.getEnd().format(DATE_TIME_FORMATTER),
                     "unique", request.isUnique()
             );
             path = statServerUrl + "/stats/?start={start}&end={end}unique={unique}";
