@@ -1,0 +1,1283 @@
+{
+	"info": {
+		"_postman_id": "9ca2ce99-1777-4c57-a186-5381e7c251ea",
+		"name": "Postman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "26028256"
+	},
+	"item": [
+		{
+			"name": "check on rate can be prticipant event only",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test for response status\r",
+							"pm.test(\"Response status is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"// Test for the presence of error and errorTime properties\r",
+							"pm.test(\"Error and errorTime properties are present\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"error\");\r",
+							"    pm.expect(jsonData).to.have.property(\"errorTime\");\r",
+							"    pm.expect(jsonData.error).to.include(\"need CONFIRMED ParticipantRequest but that's request not found.\");\r",
+							"});\r",
+							"\r",
+							"// Test to check if the response has the correct content type\r",
+							"pm.test(\"Response has the correct content type\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rate\": \"false\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/rate/14/events/5"
+			},
+			"response": []
+		},
+		{
+			"name": "check self rate exception",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 409\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(409);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the error field is not empty\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.error).to.exist.and.to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error and errorTime properties are present\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"error\");\r",
+							"    pm.expect(jsonData).to.have.property(\"errorTime\");\r",
+							"    pm.expect(jsonData.error).to.include(\"That's event is your.Initiator can't rate your-self events\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the errorTime field is not empty\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.errorTime).to.exist.and.to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is in an acceptable range\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rate\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/rate/12/events/5"
+			},
+			"response": []
+		},
+		{
+			"name": "check record DisLike rate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required field - response\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.response).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response field 'response' contains 'DisLike' and number after ':'\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.response).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"\r",
+							"    pm.expect(responseData.response).to.be.a('string').and.to.include('DisLike');\r",
+							"\r",
+							"    const regex = /your DisLike record for Event ID:(\\d+)/;\r",
+							"    const match = responseData.response.match(regex);\r",
+							"\r",
+							"    pm.expect(match).to.not.be.null;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rate\": \"false\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/rate/13/events/5"
+			},
+			"response": []
+		},
+		{
+			"name": "check record Like rate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required field - response\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.response).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response field 'response' contains 'Like' and number after ':'\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.response).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"\r",
+							"    pm.expect(responseData.response).to.be.a('string').and.to.include('Like');\r",
+							"\r",
+							"    const regex = /your Like record for Event ID:(\\d+)/;\r",
+							"    const match = responseData.response.match(regex);\r",
+							"\r",
+							"    pm.expect(match).to.not.be.null;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rate\": \"true\",\r\n    \"message\": \"Защити нас! Господи Иесусе Христе, сыне Божий.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/rate/16/events/7"
+			},
+			"response": []
+		},
+		{
+			"name": "check change rate only once a day",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"pm.test(\"Error property is present and is a string\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error).to.be.a('string');\r",
+							"});\r",
+							"pm.test(\"ErrorTime property is present and is a string\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.errorTime).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error and errorTime properties are present\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"error\");\r",
+							"    pm.expect(jsonData).to.have.property(\"errorTime\");\r",
+							"    pm.expect(jsonData.error).to.include(\"you can change your mind only once a day\");\r",
+							"});\r",
+							"\r",
+							"// Test to check if the response has the correct content type\r",
+							"pm.test(\"Response has the correct content type\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"rate\": \"false\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/rate/13/events/5"
+			},
+			"response": []
+		},
+		{
+			"name": "check the sorting by Likes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body is an array\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body contains required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    const requiredFields = [\"id\", \"annotation\", \"category\", \"confirmedRequests\", \"eventDate\", \"initiator\", \"paid\", \"title\", \"views\", \"rating\"];\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        requiredFields.forEach(function (field) {\r",
+							"            pm.expect(event[field]).to.exist;\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate id is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.id).to.be.a('number');\r",
+							"        pm.expect(event.id).to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate eventDate format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.eventDate).to.match(/^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$/);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body is not empty\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Response body should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the category object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.category).to.exist.and.to.be.an('object');\r",
+							"        pm.expect(event.category.id).to.exist.and.to.be.a('number');\r",
+							"        pm.expect(event.category.name).to.exist.and.to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"confirmedRequests is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.confirmedRequests).to.be.a('number');\r",
+							"        pm.expect(event.confirmedRequests).to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the rating object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.rating).to.be.an('object');\r",
+							"        pm.expect(event.rating.likes).to.be.a('number');\r",
+							"        pm.expect(event.rating.disLikes).to.be.a('number');\r",
+							"        pm.expect(event.rating.likes).to.be.gte(event.rating.disLikes);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/events?likesSort=true&size=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events"
+					],
+					"query": [
+						{
+							"key": "likesSort",
+							"value": "true"
+						},
+						{
+							"key": "size",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check the sorting by DisLikes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body is an array\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body contains required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    const requiredFields = [\"id\", \"annotation\", \"category\", \"confirmedRequests\", \"eventDate\", \"initiator\", \"paid\", \"title\", \"views\", \"rating\"];\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        requiredFields.forEach(function (field) {\r",
+							"            pm.expect(event[field]).to.exist;\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate id is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.id).to.be.a('number');\r",
+							"        pm.expect(event.id).to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate eventDate format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.eventDate).to.match(/^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$/);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body is not empty\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Response body should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the category object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.category).to.exist.and.to.be.an('object');\r",
+							"        pm.expect(event.category.id).to.exist.and.to.be.a('number');\r",
+							"        pm.expect(event.category.name).to.exist.and.to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"confirmedRequests is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.confirmedRequests).to.be.a('number');\r",
+							"        pm.expect(event.confirmedRequests).to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Title is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the rating object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (event) {\r",
+							"        pm.expect(event.rating).to.be.an('object');\r",
+							"        pm.expect(event.rating.likes).to.be.a('number');\r",
+							"        pm.expect(event.rating.disLikes).to.be.a('number');\r",
+							"        pm.expect(event.rating.disLikes).to.be.gte(event.rating.likes);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/events?likesSort=false&size=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events"
+					],
+					"query": [
+						{
+							"key": "likesSort",
+							"value": "false"
+						},
+						{
+							"key": "size",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pre check for get list Rating Initiators",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const main = async () => {\r",
+							"    const userId = '3';\r",
+							"    const categoryId = '3';\r",
+							"    const api = new API(pm);\r",
+							"    const rnd = new RandomUtils();\r",
+							"\r",
+							"    try {\r",
+							"        let eventBody = rnd.getEvent(categoryId);\r",
+							"        eventBody['requestModeration'] = false\r",
+							"        let event = await api.addEvent(userId, eventBody);\r",
+							"        event = await api.publishEvent(event.id);\r",
+							"        pm.request.removeQueryParams(['eventId']);\r",
+							"        pm.request.addQueryParams([`eventId=` + event.id]);\r",
+							"        pm.collectionVariables.set('uid', 7);\r",
+							"        pm.collectionVariables.set('eventId', event.id);\r",
+							"    } catch(err) {\r",
+							"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"const interval = setInterval(() => {}, 1000);\r",
+							"\r",
+							"setTimeout(async () => \r",
+							"    {\r",
+							"        try {\r",
+							"            // выполняем наш скрипт\r",
+							"            await main();\r",
+							"        } catch (e) {\r",
+							"            console.error(e);\r",
+							"        } finally {\r",
+							"            clearInterval(interval);\r",
+							"        }\r",
+							"    },  \r",
+							"    100 \r",
+							");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.id).to.exist;\r",
+							"    pm.expect(responseData.event).to.exist;\r",
+							"    pm.expect(responseData.requester).to.exist;\r",
+							"    pm.expect(responseData.status).to.exist;\r",
+							"    pm.expect(responseData.created).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Id is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.id).to.exist.and.to.be.a('number');\r",
+							"    pm.expect(responseData.id).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Event is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.event).to.be.a('number');\r",
+							"    pm.expect(responseData.event).to.be.at.least(0, \"Event should be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Requester is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.requester).to.be.a('number');\r",
+							"    pm.expect(responseData.requester).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/:userId/requests?eventId=0",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						":userId",
+						"requests"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "0"
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "{{uid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check get list Rating Initiators",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function sendUserRequests(callback) {\r",
+							"    const ids = pm.collectionVariables.get('eventId');\r",
+							"    const userIds = [8, 9, 10];\r",
+							"    let count = 0;\r",
+							"\r",
+							"    userIds.forEach(function (id) {\r",
+							"        const newUrl = `http://localhost:8080/users/${id}/requests?eventId=${ids}`;\r",
+							"\r",
+							"        pm.sendRequest({\r",
+							"            url: newUrl,\r",
+							"            method: 'POST'\r",
+							"        }, function (err, response) {\r",
+							"            count++;\r",
+							"            if (count === userIds.length) {\r",
+							"                callback();\r",
+							"            }\r",
+							"        });\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"function sendRateRequests() {\r",
+							"    const userIds = [7, 8, 9, 10];\r",
+							"    const ids = pm.collectionVariables.get('eventId');\r",
+							"    userIds.forEach(function (id) {\r",
+							"        const newUrl = `http://localhost:8080/rate/${id}/events/${ids}`;\r",
+							"\r",
+							"        pm.sendRequest({\r",
+							"            url: newUrl,\r",
+							"            method: 'POST',\r",
+							"            body: {\r",
+							"                mode: 'raw',\r",
+							"                raw: JSON.stringify({rate: true})\r",
+							"            },\r",
+							"            header: {\r",
+							"                'Content-Type': 'application/json'\r",
+							"            }\r",
+							"        }, function (err, response) {\r",
+							"\r",
+							"        });\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"sendUserRequests(sendRateRequests);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The array length must be greater than zero\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Array length should be greater than zero\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Each object in the array has the required fields - name and rate\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item).to.have.property('name');\r",
+							"        pm.expect(item).to.have.property('rate');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Likes and dislikes are non-negative integers and likes > dislikes\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').and.to.have.lengthOf.at.least(1);\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.rate.likes).to.be.a('number').and.to.be.at.least(0);\r",
+							"        pm.expect(item.rate.disLikes).to.be.a('number').and.to.be.at.least(0);\r",
+							"        pm.expect(item.rate.likes).to.be.greaterThan(item.rate.disLikes);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The first object's likes mast be greater than the second object's likes\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"\r",
+							"  pm.expect(responseData).to.be.an('array').and.to.have.lengthOf.at.least(2, \"Array length should be greater than or equal to 2\");\r",
+							"\r",
+							"  const firstObjectLikes = responseData[0].rate.likes;\r",
+							"  const secondObjectLikes = responseData[1].rate.likes;\r",
+							"\r",
+							"  pm.expect(firstObjectLikes).to.be.greaterThan(secondObjectLikes, \"First object's likes should be greater than the second object's likes\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify that the 'name' is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (initiator) {\r",
+							"        pm.expect(initiator.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/rate/initiators"
+			},
+			"response": []
+		},
+		{
+			"name": "check get Liked list RateMessage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the response format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item).to.be.an('object');\r",
+							"        pm.expect(item.rate).to.exist.and.to.be.a('boolean');\r",
+							"        pm.expect(item.author).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(item.message).to.exist.and.to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate that the 'rate' field is a boolean value\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.rate).to.be.a('boolean');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The author field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author field should be a non-empty string\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The message field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/rate/event/message/{{eventId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "check get DisLiked list RateMessage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the response format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item).to.be.an('object');\r",
+							"        pm.expect(item.rate).to.exist.and.to.be.a('boolean');\r",
+							"        pm.expect(item.author).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(item.message).to.exist.and.to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate that the 'rate' field is a boolean value\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.rate).to.be.a('boolean');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The author field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author field should be a non-empty string\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The message field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/rate/event/message/{{eventId}}?rate=false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rate",
+						"event",
+						"message",
+						"{{eventId}}"
+					],
+					"query": [
+						{
+							"key": "rate",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check get Liked list RateMessage by User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the response format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item).to.be.an('object');\r",
+							"        pm.expect(item.rate).to.exist.and.to.be.a('boolean');\r",
+							"        pm.expect(item.author).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(item.message).to.exist.and.to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate that the 'rate' field is a boolean value\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.rate).to.be.a('boolean');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The author field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author field should be a non-empty string\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The message field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/rate/user/message/8"
+			},
+			"response": []
+		},
+		{
+			"name": "check get DisLiked list RateMessage by User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the response format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item).to.be.an('object');\r",
+							"        pm.expect(item.rate).to.exist.and.to.be.a('boolean');\r",
+							"        pm.expect(item.author).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(item.message).to.exist.and.to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate that the 'rate' field is a boolean value\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.rate).to.be.a('boolean');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The author field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.author).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Author field should be a non-empty string\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The message field is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function (item) {\r",
+							"        pm.expect(item.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/rate/user/message/8?rate=false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rate",
+						"user",
+						"message",
+						"8"
+					],
+					"query": [
+						{
+							"key": "rate",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"API = class {",
+					"    constructor(postman, verbose = false, baseUrl = \"http://localhost:8080\") {",
+					"        this.baseUrl = baseUrl;",
+					"        this.pm = postman;",
+					"        this._verbose = verbose;",
+					"    }",
+					"",
+					"    async addEvent(userId, event, verbose=null) {",
+					"        return this.post(\"/users/\" + userId + \"/events\", event, \"Ошибка при добавлении нового события: \", verbose);",
+					"    }",
+					"",
+					"    async publishEvent(eventId, verbose=null) {",
+					"        return this.patch('/admin/events/' + eventId, {stateAction: \"PUBLISH_EVENT\"}, \"Ошибка при публикации события\", verbose);",
+					"    }",
+					"",
+					"    async post(path, body, errorText = \"Ошибка при выполнении post-запроса: \", verbose=null) {",
+					"        return this.sendRequest(\"POST\", path, body, errorText, verbose);",
+					"    }",
+					"",
+					"    async patch(path, body = null, errorText = \"Ошибка при выполнении patch-запроса: \", verbose=null) {",
+					"        return this.sendRequest(\"PATCH\", path, body, errorText, verbose);",
+					"    }",
+					"",
+					"    async get(path, body = null, errorText = \"Ошибка при выполнении get-запроса: \", verbose=null) {",
+					"        return this.sendRequest(\"GET\", path, body, errorText, verbose);",
+					"    }",
+					"",
+					"    async sendRequest(method, path, body=null, errorText = \"Ошибка при выполнении запроса: \", verbose=null) {",
+					"        return new Promise((resolve, reject) => {",
+					"            verbose = verbose == null ? this._verbose : verbose;",
+					"",
+					"            const request = {",
+					"                url: this.baseUrl + path,",
+					"                method: method,",
+					"                body: body == null ? \"\" : JSON.stringify(body),",
+					"                header: { \"Content-Type\": \"application/json\" },",
+					"            };",
+					"",
+					"            if(verbose) {",
+					"                console.log(\"Отправляю запрос: \", request);",
+					"            }",
+					"",
+					"            try {",
+					"                this.pm.sendRequest(request, (error, response) => {",
+					"                    if(error || (response.code >= 400 && response.code <= 599)) {",
+					"                        let err = error ? error : JSON.stringify(response.json());",
+					"                        console.error(\"При выполнении запроса к серверу возникла ошика.\\n\", err,",
+					"                             \"\\nДля отладки проблемы повторите такой же запрос к вашей программе \" + ",
+					"                             \"на локальном компьютере. Данные запроса:\\n\", JSON.stringify(request));",
+					"",
+					"                        reject(new Error(errorText + err));",
+					"                    }",
+					"",
+					"                    if(verbose) {",
+					"                        console.log(\"Результат обработки запроса: код состояния - \", response.code, \", тело: \", response.json());",
+					"                    }",
+					"",
+					"                    resolve(response.json());",
+					"                });",
+					"            } catch(err) {",
+					"                if(verbose) {",
+					"                    console.error(errorText, err);",
+					"                }",
+					"                return Promise.reject(err);",
+					"            }",
+					"        });",
+					"    }",
+					"};",
+					"",
+					"RandomUtils = class {",
+					"    constructor() {}",
+					"",
+					"    getEvent(categoryId) {",
+					"        return {",
+					"            annotation: pm.variables.replaceIn('{{$randomLoremParagraph}}'),",
+					"            category: categoryId,",
+					"            description: pm.variables.replaceIn('{{$randomLoremParagraphs}}'),",
+					"            eventDate: this.getFutureDateTime(),",
+					"            location: {",
+					"                lat: parseFloat(pm.variables.replaceIn('{{$randomLatitude}}')),",
+					"                lon: parseFloat(pm.variables.replaceIn('{{$randomLongitude}}')),",
+					"            },",
+					"            paid: pm.variables.replaceIn('{{$randomBoolean}}'),",
+					"            participantLimit: pm.variables.replaceIn('{{$randomInt}}'),",
+					"            requestModeration: pm.variables.replaceIn('{{$randomBoolean}}'),",
+					"            title: pm.variables.replaceIn('{{$randomLoremSentence}}'),",
+					"        }",
+					"    }",
+					"",
+					"        getFutureDateTime(hourShift = 5, minuteShift=0, yearShift=0) {",
+					"        let moment = require('moment');",
+					"",
+					"        let m = moment();",
+					"        m.add(hourShift, 'hour');",
+					"        m.add(minuteShift, 'minute');",
+					"        m.add(yearShift, 'year');",
+					"",
+					"        return m.format('YYYY-MM-DD HH:mm:ss');",
+					"    }",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "eventId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "uid",
+			"value": ""
+		}
+	]
+}

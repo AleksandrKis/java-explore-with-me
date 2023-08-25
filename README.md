@@ -1,2 +1,3 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+
+<img alt="Explore With Me schema project." height="768" src="C:\Users\Old\Pictures\КУРС\Diplom\schemaEWM.jpg" title="schema" width="1024"/>

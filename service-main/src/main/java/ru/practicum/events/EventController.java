@@ -93,13 +93,14 @@ public class EventController {
                                               @RequestParam(required = false) String rangeEnd,
                                               @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
                                               @RequestParam(required = false, defaultValue = "EVENT_DATE") String sort,
+                                              @RequestParam(required = false, defaultValue = "true") Boolean likesSort,
                                               @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
                                               @Positive @RequestParam(required = false, defaultValue = "10") int size,
                                               HttpServletRequest request) {
         log.info(ANSWER + "search public event by param: text-{} in categories-{}", text, categories);
         return service.searchEventsByPublic(SearchPublicDto.builder().text(text).categories(categories)
                 .paid(paid).timeDto(new TimeDto(rangeStart, rangeEnd))
-                .onlyAvailable(onlyAvailable).sort(validSort(sort)).from(from).size(size).build(), request);
+                .onlyAvailable(onlyAvailable).sort(validSort(sort)).likesSort(likesSort).from(from).size(size).build(), request);
     }
 
     @GetMapping(PUBLIC + "/{id}")

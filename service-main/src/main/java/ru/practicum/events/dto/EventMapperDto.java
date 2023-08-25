@@ -2,6 +2,7 @@ package ru.practicum.events.dto;
 
 import ru.practicum.events.models.Event;
 import ru.practicum.events.models.EventStatus;
+import ru.practicum.ratings.dto.RateMapperDto;
 import ru.practicum.requests.models.ParticipantRequest;
 import ru.practicum.requests.models.RequestStatus;
 
@@ -43,7 +44,8 @@ public class EventMapperDto {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState().toString())
                 .title(event.getTitle())
-                .views(event.getViews()).build();
+                .views(event.getViews())
+                .rating(RateMapperDto.mapToDto(event)).build();
     }
 
     public static ShortEventDto mapToShortEventDto(Event event) {
@@ -56,7 +58,8 @@ public class EventMapperDto {
                 .initiator(mapToShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(event.getViews()).build();
+                .views(event.getViews())
+                .rating(RateMapperDto.mapToDto(event)).build();
     }
 
     public static Long requestConfirmedCount(List<ParticipantRequest> list) {

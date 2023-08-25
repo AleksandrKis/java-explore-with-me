@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.categories.dto.CategoryDto;
+import ru.practicum.ratings.dto.RateDto;
 import ru.practicum.users.dto.ShortUserDto;
 
 @Data
@@ -20,4 +21,5 @@ public class ShortEventDto {
     Boolean paid;
     String title;
     Long views;
+    RateDto rating;
 }

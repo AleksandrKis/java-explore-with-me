@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.categories.models.Category;
 import ru.practicum.compilation.models.Compilation;
 import ru.practicum.locations.models.Location;
+import ru.practicum.ratings.models.Rate;
 import ru.practicum.requests.models.ParticipantRequest;
 import ru.practicum.users.models.User;
 
@@ -65,4 +66,7 @@ public class Event {
     Set<Compilation> compilations;
     @Column(name = "views")
     Long views;
+    @OneToMany(mappedBy = "event")
+    @ToString.Exclude
+    List<Rate> rating;
 }

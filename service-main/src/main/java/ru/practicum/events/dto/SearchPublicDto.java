@@ -18,6 +18,7 @@ public class SearchPublicDto {
     TimeDto timeDto;
     Boolean onlyAvailable;
     SortEvent sort;
+    Boolean likesSort;
     Integer from;
     Integer size;
 }
