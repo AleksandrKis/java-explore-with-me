@@ -55,7 +55,7 @@ public class RatingServiceImpl implements RatingService {
         Optional<Rate> rating = rateRepo.findFirstByEventAndRater(event, user);//checking the existence rating-
         if (rating.isPresent()) { // -from the current user for this event. If rating exist:
             checkChangeTime(rating.get().getTime().plusDays(timeLimit), // Checking that the rating or message changes
-                    "you can change your mind, only once a day"); // no more than once a day
+                    "you can change your mind only once a day"); // no more than once a day
             return getChangeResponseDto(rateInputDto, rating.get(), user, event);
         } else {
             return getNewResponseDto(rateInputDto, event, user);
