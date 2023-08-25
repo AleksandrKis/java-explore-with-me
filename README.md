@@ -1,3 +1,2 @@
 # java-explore-with-me
-
-<img alt="Explore With Me schema project." height="768" src="C:\Users\Old\Pictures\КУРС\Diplom\schemaEWM.jpg" title="schema" width="1024"/>
+![schemaEWM](https://github.com/AleksandrKis/java-explore-with-me/assets/111588369/951111a7-e42c-466e-8c92-1079682e79fe)
