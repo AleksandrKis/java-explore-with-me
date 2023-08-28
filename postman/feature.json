@@ -120,8 +120,8 @@
 					"script": {
 						"exec": [
 							"\r",
-							"pm.test(\"Response status code is 200\", function () {\r",
-							"    pm.expect(pm.response.code).to.equal(200);\r",
+                          "pm.test(\"Response status code is 200 or 201\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
 							"});\r",
 							"\r",
 							"\r",
@@ -176,8 +176,8 @@
 					"script": {
 						"exec": [
 							"\r",
-							"pm.test(\"Response status code is 200\", function () {\r",
-							"    pm.expect(pm.response.code).to.equal(200);\r",
+                          "pm.test(\"Response status code is 200 or 201\", function () {\r",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
 							"});\r",
 							"\r",
 							"\r",

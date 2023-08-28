@@ -28,8 +28,8 @@ public class RateController {
     static final String ANSWER = "RateController: received request for ";
 
     @PostMapping("/rate/{userId}/events/{eventId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseDto hitRateToEvent(@PathVariable long userId,
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDto giveRateToEvent(@PathVariable long userId,
                                       @PathVariable long eventId,
                                       @Valid @RequestBody RateInputDto rateInputDto) {
         log.info(ANSWER + "Hit rate for event by ID:{}, from user by ID:{}, rate by {}", eventId, userId, rateInputDto);

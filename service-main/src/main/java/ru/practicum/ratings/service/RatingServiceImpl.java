@@ -162,7 +162,7 @@ public class RatingServiceImpl implements RatingService {
     }
 
     private static void checkChangeTime(LocalDateTime rateTime, String message) {
-        if (!LocalDateTime.now().plusDays(1).isAfter(rateTime)) {
+        if (!LocalDateTime.now().plusDays(timeLimit).isAfter(rateTime)) {
             throw new HaveNotPermissionException(message);
         }
     }
