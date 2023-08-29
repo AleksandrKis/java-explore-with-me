@@ -1,4 +1,3 @@
-[Pull request](https://github.com/AleksandrKis/java-explore-with-me/pull/5)
 # ![ewm](./logo.gif)
 
 #### _backend project implementation_
