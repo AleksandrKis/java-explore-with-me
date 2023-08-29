@@ -31,20 +31,23 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                   @Param("rangeEnd") LocalDateTime rangeEnd,
                                   Pageable page);
 
-    @Query("SELECT e FROM Event e WHERE (:text IS NULL " +
+    @Query("SELECT e FROM Event e LEFT JOIN e.rating r " +
+            "WHERE (r IS NULL OR r.rate = :sortByRate AND :text IS NULL " +
             "OR LOWER(e.annotation) LIKE LOWER(concat('%', :text, '%'))" +
             "OR LOWER(e.description) LIKE LOWER(concat('%', :text, '%'))" +
             "OR LOWER(e.title) LIKE LOWER(concat('%', :text, '%')))" +
             "AND (:categories IS NULL OR e.category.id IN :categories)" +
             "AND (:paid IS NULL OR e.paid = :paid)" +
             "AND (e.state = 'PUBLISHED')" +
-            "AND (e.eventDate BETWEEN cast(:start as date) AND cast(:rangeEnd as date))" +
-            "ORDER BY :sort")
-    List<Event> findEventsByPublic(@Param("text") String text,
-                                   @Param("categories") Set<Long> categories,
-                                   @Param("paid") Boolean paid,
-                                   @Param("start") LocalDateTime start,
-                                   @Param("rangeEnd") LocalDateTime rangeEnd,
-                                   @Param("sort") SortEvent sort,
-                                   Pageable page);
+            "AND (e.eventDate BETWEEN cast(:start as date) AND cast(:rangeEnd as date)) " +
+            "GROUP BY e " +
+            "ORDER BY :sort, COUNT (r.rate) DESC ")
+    List<Event> findEventsByPublicRate(@Param("text") String text,
+                                       @Param("categories") Set<Long> categories,
+                                       @Param("paid") Boolean paid,
+                                       @Param("start") LocalDateTime start,
+                                       @Param("rangeEnd") LocalDateTime rangeEnd,
+                                       @Param("sort") SortEvent sort,
+                                       @Param("sortByRate") Boolean sortByRate,
+                                       Pageable page);
 }

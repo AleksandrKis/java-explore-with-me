@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.locations.dto.LocationDto;
+import ru.practicum.ratings.dto.RateDto;
 import ru.practicum.users.dto.ShortUserDto;
 
 @Data
@@ -28,4 +29,5 @@ public class EventFullDto {
     String state;
     String title;
     Long views;
+    RateDto rating;
 }

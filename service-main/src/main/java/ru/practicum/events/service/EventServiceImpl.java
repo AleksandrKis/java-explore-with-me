@@ -112,13 +112,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<ShortEventDto> searchEventsByPublic(SearchPublicDto publicDto, HttpServletRequest request) {
         validTime(publicDto.getTimeDto().getRangeStart(), publicDto.getTimeDto().getRangeEnd());
-        List<Event> result = eventRepo.findEventsByPublic(
+        List<Event> result = eventRepo.findEventsByPublicRate(
                 publicDto.getText(),
                 publicDto.getCategories(),
                 publicDto.getPaid(),
                 publicDto.getTimeDto().getStart(),
                 publicDto.getTimeDto().getEnd(),
                 publicDto.getSort(),
+                publicDto.getLikesSort(),
                 getPage(publicDto.getFrom(), publicDto.getSize())
         );
         checkValidUniqueIp(request, result);
