@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ratings.dto.RateInputDto;
-import ru.practicum.ratings.dto.RateMessageDto;
-import ru.practicum.ratings.dto.RatingInitiatorsDto;
-import ru.practicum.ratings.dto.ResponseDto;
+import ru.practicum.ratings.dto.*;
 import ru.practicum.ratings.service.RatingService;
 
 import javax.validation.Valid;
@@ -62,5 +59,12 @@ public class RateController {
                                                         @Positive @RequestParam(required = false, defaultValue = "10") int size) {
         log.info(ANSWER + "get all messageRating by userID:{}, rate:{}.", userId, rate);
         return service.getRateMessageByUser(userId, rate, from, size);
+    }
+
+    @GetMapping("/rate/recommend/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RecommendDto> getRecommendedByUser(@PathVariable long userId) {
+        log.info(ANSWER + "get recommended events by userID:{}.", userId);
+        return service.getRecommendedEvents(userId);
     }
 }

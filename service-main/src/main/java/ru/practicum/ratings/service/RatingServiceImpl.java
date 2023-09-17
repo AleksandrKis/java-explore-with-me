@@ -118,6 +118,23 @@ public class RatingServiceImpl implements RatingService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * The feature of this method:
+     * getting a list of Recommended Events by specifically for current User.
+     *
+     * @param userId User identifier for whom recommendations are being generated.
+     * @return List of events recommended for the current user.
+     */
+    @Override
+    public List<RecommendDto> getRecommendedEvents(long userId) {
+        User user = userService.checkUserExist(userId);
+        List<Long> raters = rateRepo.findMatchingRaterIds(userId);
+        return rateRepo.findPredictionEventsIds(raters, user).stream()
+                .map(eventService::checkValidEvent)
+                .map(RateMapperDto::mapToRecommendDto)
+                .collect(Collectors.toList());
+    }
+
     private Event checkValidForRating(long eventId, User user) {
         Event event = eventService.checkValidEvent(eventId);// checking that event id is registered in the system.
         if (event.getState().equals(EventStatus.PUBLISHED)) {

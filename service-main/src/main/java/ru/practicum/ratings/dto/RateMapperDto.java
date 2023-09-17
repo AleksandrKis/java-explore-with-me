@@ -43,4 +43,8 @@ public class RateMapperDto {
         return RateMessageDto.builder().eventId(rate.getEvent().getId()).rate(rate.getRate())
                 .author(rate.getRater().getName()).message(rate.getMessage()).build();
     }
+
+    public static RecommendDto mapToRecommendDto(Event event) {
+        return RecommendDto.builder().eventId(event.getId()).annotation(event.getAnnotation()).build();
+    }
 }
